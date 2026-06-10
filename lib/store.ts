@@ -17,15 +17,21 @@ type AppStore = {
   cloudStatus: "idle" | "syncing" | "synced" | "error";
   cloudMessage?: string;
   lastResult?: Character;
-  createLocalAccount: (name: string, email?: string) => void;
+  spinKey: number; // increment to force animation replay
+  createLocalAccount: (name: string, password?: string) => void;
   createSupabaseAccount: (name: string, email: string, password: string) => Promise<void>;
   signInWithSupabase: (email: string, password: string) => Promise<void>;
+  signInLocal: (name: string, password?: string) => boolean;
   signOut: () => Promise<void>;
   syncToCloud: () => Promise<void>;
   loadCloudAccount: () => Promise<void>;
   setActiveAccount: (accountId: string) => void;
   createPlayer: (name: string) => void;
   setActivePlayer: (playerId: string) => void;
+  updatePlayer: (playerId: string, updates: Partial<PlayerProfile>) => void;
+  deletePlayer: (playerId: string) => void;
+  duplicatePlayer: (playerId: string) => void;
+  resetPlayerStats: (playerId: string) => void;
   spin: () => Character | undefined;
   updateSettings: (settings: Partial<BalanceSettings>) => void;
   updateRosterJson: (rawJson: string) => void;
@@ -66,7 +72,7 @@ function createRosterSet(name = "ASBR Default Roster"): RosterSet {
   };
 }
 
-function createMiniAccount(name: string, email?: string, id = uid("account")): MiniAccount {
+function createMiniAccount(name: string, email?: string, id = uid("account"), password?: string): MiniAccount {
   const roster = createRosterSet();
   const player = createPlayerProfile("Player 1");
 
@@ -74,6 +80,7 @@ function createMiniAccount(name: string, email?: string, id = uid("account")): M
     id,
     name,
     email,
+    password,
     players: [player],
     activePlayerId: player.id,
     rosterSets: [roster],
@@ -107,9 +114,10 @@ export const useAppStore = create<AppStore>()(
       accounts: [],
       authMode: "local",
       cloudStatus: "idle",
+      spinKey: 0,
 
-      createLocalAccount: (name, email) => {
-        const account = createMiniAccount(name.trim() || "Local Account", email);
+      createLocalAccount: (name, password) => {
+        const account = createMiniAccount(name.trim() || "Local Account", undefined, uid("account"), password || undefined);
         set((state) => ({
           accounts: [...state.accounts, account],
           activeAccountId: account.id,
@@ -121,7 +129,7 @@ export const useAppStore = create<AppStore>()(
 
       createSupabaseAccount: async (name, email, password) => {
         if (!supabase) {
-          get().createLocalAccount(name, email);
+          get().createLocalAccount(name);
           set({ cloudStatus: "error", cloudMessage: "Supabase env vars are not configured; using local mode." });
           return;
         }
@@ -159,6 +167,18 @@ export const useAppStore = create<AppStore>()(
           return;
         }
         await get().loadCloudAccount();
+      },
+
+      signInLocal: (name, password) => {
+        const { accounts } = get();
+        const account = accounts.find(
+          (a) => a.name.toLowerCase() === name.trim().toLowerCase()
+        );
+        if (!account) return false;
+        // if account has a password, check it
+        if (account.password && account.password !== (password ?? "")) return false;
+        set({ activeAccountId: account.id, authMode: "local", cloudStatus: "idle", cloudMessage: undefined });
+        return true;
       },
 
       signOut: async () => {
@@ -257,6 +277,66 @@ export const useAppStore = create<AppStore>()(
         set((state) => ({ accounts: replaceAccount(state.accounts, next) }));
       },
 
+      updatePlayer: (playerId, updates) => {
+        const account = activeAccount(get());
+        if (!account) return;
+        const next = {
+          ...account,
+          players: account.players.map((p) => p.id === playerId ? { ...p, ...updates } : p)
+        };
+        set((state) => ({ accounts: replaceAccount(state.accounts, next) }));
+        void get().syncToCloud();
+      },
+
+      deletePlayer: (playerId) => {
+        const account = activeAccount(get());
+        if (!account) return;
+        const remaining = account.players.filter((p) => p.id !== playerId);
+        if (remaining.length === 0) return; // keep at least one
+        const next = {
+          ...account,
+          players: remaining,
+          activePlayerId: account.activePlayerId === playerId ? remaining[0].id : account.activePlayerId
+        };
+        set((state) => ({ accounts: replaceAccount(state.accounts, next) }));
+        void get().syncToCloud();
+      },
+
+      duplicatePlayer: (playerId) => {
+        const account = activeAccount(get());
+        if (!account) return;
+        const src = account.players.find((p) => p.id === playerId);
+        if (!src) return;
+        const copy: PlayerProfile = {
+          ...src,
+          id: uid("player"),
+          name: `${src.name} (copy)`,
+          lastActiveAt: new Date().toISOString()
+        };
+        const next = {
+          ...account,
+          players: [...account.players, copy],
+          activePlayerId: copy.id
+        };
+        set((state) => ({ accounts: replaceAccount(state.accounts, next) }));
+        void get().syncToCloud();
+      },
+
+      resetPlayerStats: (playerId) => {
+        const account = activeAccount(get());
+        if (!account) return;
+        const next = {
+          ...account,
+          players: account.players.map((p) =>
+            p.id === playerId
+              ? { ...p, spins: 0, history: [], perCharacterCounts: {}, tierCounts: {}, luck: 0, pity: 0 }
+              : p
+          )
+        };
+        set((state) => ({ accounts: replaceAccount(state.accounts, next) }));
+        void get().syncToCloud();
+      },
+
       spin: () => {
         const account = activeAccount(get());
         const player = getActivePlayer(account);
@@ -270,7 +350,11 @@ export const useAppStore = create<AppStore>()(
           players: account.players.map((item) => (item.id === player.id ? nextPlayer : item))
         };
 
-        set((state) => ({ accounts: replaceAccount(state.accounts, next), lastResult: result }));
+        set((state) => ({
+          accounts: replaceAccount(state.accounts, next),
+          lastResult: result,
+          spinKey: state.spinKey + 1 // increment to force animation replay
+        }));
         void get().syncToCloud();
         return result;
       },
@@ -299,7 +383,7 @@ export const useAppStore = create<AppStore>()(
 
       resetDemo: () => {
         const account = createMiniAccount("Demo Account");
-        set({ accounts: [account], activeAccountId: account.id, authMode: "local", lastResult: undefined });
+        set({ accounts: [account], activeAccountId: account.id, authMode: "local", lastResult: undefined, spinKey: 0 });
       }
     }),
     {

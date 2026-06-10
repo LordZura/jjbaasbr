@@ -65,6 +65,7 @@ export type MiniAccount = {
   id: string;
   name: string;
   email?: string;
+  password?: string;
   players: PlayerProfile[];
   activePlayerId?: string;
   rosterSets: RosterSet[];
