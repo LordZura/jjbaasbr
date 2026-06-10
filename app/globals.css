@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --font-display: "Arial Black";
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: #090a12;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    radial-gradient(circle at 50% 20%, rgba(255, 214, 107, 0.16), transparent 28rem),
+    radial-gradient(circle at 15% 20%, rgba(53, 232, 255, 0.14), transparent 22rem),
+    #090a12;
+  background-size: 100% 4px, auto, auto, auto;
+  color: #f5f7fb;
+  overflow-x: hidden;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(255, 214, 107, 0.35);
+}
+
+@layer utilities {
+  .clip-slash {
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 100%, 18px 100%);
+  }
+
+  .clip-card {
+    clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 100%, 0 100%);
+  }
+
+  .text-outline {
+    text-shadow:
+      2px 2px 0 #090a12,
+      -1px -1px 0 rgba(255, 255, 255, 0.16),
+      0 0 22px rgba(255, 63, 124, 0.45);
+  }
+
+  .noise-mask {
+    position: relative;
+  }
+
+  .noise-mask::after {
+    pointer-events: none;
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("/assets/fate-burst.png");
+    background-size: cover;
+    background-position: center;
+    mix-blend-mode: screen;
+    opacity: 0.12;
+  }
+}
