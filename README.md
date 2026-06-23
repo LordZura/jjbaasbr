@@ -20,13 +20,15 @@ character meta.
 
 ## Shared data
 
-All data lives under two keys — `players` and `matches` — and the whole group
-sees one synced dataset. Stats are **always re-derived from raw matches**, never
-stored.
+All data lives under three keys — `players`, `matches` and `collections` (gacha
+pulls + algorithm luck) — and the whole group sees one synced dataset. Stats are
+**always re-derived from raw matches**, never stored.
 
 - **With Supabase** (`NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY`):
-  a shared `shared_state` table with realtime, so every device updates live.
-  Apply `supabase/migrations/002_shared_state.sql`.
+  a shared `shared_state` table with realtime, so every device updates live, and
+  every device re-syncs on reconnect / tab refocus. Run
+  [`supabase/schema.sql`](supabase/schema.sql) — one idempotent file, safe to run
+  (and re-run) on any database.
 - **Without Supabase**: falls back to `localStorage`, kept in sync across tabs.
 
 ## Character images

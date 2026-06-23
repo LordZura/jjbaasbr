@@ -4,16 +4,19 @@
 
 :root {
   color-scheme: dark;
-  --font-display: "Arial Black";
 }
 
 * {
   box-sizing: border-box;
 }
 
+/* `--font-display` / `--font-body` are set on <html> by next/font (Anton /
+   Oswald). The var() fallbacks below cover the brief pre-swap window and any
+   environment where the fonts can't load. */
 html {
   min-height: 100%;
   background: #0b0907;
+  font-family: var(--font-body, "Oswald", system-ui, sans-serif);
 }
 
 /* Dark brown / sepia ASBR character-select backdrop with a subtle radial
@@ -417,4 +420,210 @@ button {
 }
 .anim-aura {
   animation: auraBreath 2.4s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   JOJO DRAMA — manga motifs, impact lettering, screen shake, time-stop reveal
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@layer utilities {
+  /* Manga halftone dot shading — lay over panels at low opacity. */
+  .halftone {
+    background-image: radial-gradient(rgba(0, 0, 0, 0.55) 1px, transparent 1.6px);
+    background-size: 6px 6px;
+  }
+  .halftone-gold {
+    background-image: radial-gradient(rgba(255, 214, 107, 0.5) 1px, transparent 1.6px);
+    background-size: 7px 7px;
+  }
+
+  /* Radiating manga "action lines" — converge attention to the center. */
+  .speed-lines {
+    background: repeating-conic-gradient(
+      from 0deg,
+      rgba(255, 255, 255, 0.12) 0deg 0.8deg,
+      transparent 0.8deg 4.5deg
+    );
+    -webkit-mask-image: radial-gradient(circle, transparent 26%, black 64%);
+    mask-image: radial-gradient(circle, transparent 26%, black 64%);
+  }
+
+  /* Heavy "impact frame" lettering — thick dark stroke + hard offset shadow. */
+  .text-manga {
+    -webkit-text-stroke: 2px #0b0806;
+    text-shadow:
+      3px 3px 0 rgba(0, 0, 0, 0.7),
+      0 0 24px rgba(255, 63, 124, 0.35);
+  }
+
+  /* The iconic purple ゴゴゴ "menacing" marks. */
+  .menacing {
+    color: #b98cff;
+    text-shadow:
+      0 0 9px rgba(150, 90, 255, 0.85),
+      0 2px 0 #1a0a2e,
+      2px 2px 0 rgba(0, 0, 0, 0.6);
+  }
+
+  .vignette {
+    box-shadow: inset 0 0 120px 30px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Diagonal manga "slash" cut for cards/buttons. */
+  .clip-gash {
+    clip-path: polygon(0 0, 100% 0, 100% 72%, 88% 100%, 0 100%, 0 28%);
+  }
+}
+
+/* ── screen shake (impact feedback) ─────────────────────────────────────── */
+@keyframes screenShake {
+  10%, 90% { transform: translate(-1px, 0); }
+  20%, 80% { transform: translate(2px, -1px); }
+  30%, 50%, 70% { transform: translate(-3px, 1px); }
+  40%, 60% { transform: translate(3px, 1px); }
+}
+.animate-screen-shake {
+  animation: screenShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes bigShake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-8px, 4px) rotate(-1deg); }
+  20% { transform: translate(9px, -5px) rotate(1.2deg); }
+  30% { transform: translate(-10px, -3px) rotate(-1.4deg); }
+  40% { transform: translate(8px, 6px) rotate(1deg); }
+  50% { transform: translate(-7px, 3px) rotate(-0.8deg); }
+  60% { transform: translate(6px, -5px) rotate(0.9deg); }
+  70% { transform: translate(-5px, 2px) rotate(-0.6deg); }
+  80% { transform: translate(4px, 3px) rotate(0.5deg); }
+  90% { transform: translate(-2px, -1px) rotate(-0.3deg); }
+}
+.animate-big-shake {
+  animation: bigShake 0.7s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* ── full-bleed white impact flash ──────────────────────────────────────── */
+@keyframes flashWhite {
+  0% { opacity: 0; }
+  6% { opacity: 0.95; }
+  100% { opacity: 0; }
+}
+.animate-flash-white {
+  animation: flashWhite 0.6s ease-out forwards;
+}
+
+/* ── ゴゴゴ menacing marks: rise + flicker ───────────────────────────────── */
+@keyframes gogoRise {
+  0% { opacity: 0; transform: translateY(16px) scale(0.6); }
+  35% { opacity: 1; }
+  100% { opacity: 0.85; transform: translateY(-14px) scale(1.05); }
+}
+.animate-gogo {
+  animation: gogoRise 1.6s ease-out infinite alternate;
+}
+
+/* ── time-stop build-up (THE WORLD) ─────────────────────────────────────── */
+@keyframes timeDesat {
+  0% { filter: grayscale(0) brightness(1) contrast(1); transform: scale(1); }
+  100% {
+    filter: grayscale(0.85) brightness(0.55) contrast(1.35);
+    transform: scale(1.04);
+  }
+}
+.animate-time-desat {
+  animation: timeDesat 0.5s ease-out forwards;
+}
+
+@keyframes vignettePulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.95; }
+}
+.animate-vignette-pulse {
+  animation: vignettePulse 1s ease-in-out infinite;
+}
+
+/* tension heartbeat — text punches outward in pulses */
+@keyframes heartPunch {
+  0%, 100% { transform: scale(1); }
+  8% { transform: scale(1.16); }
+  16% { transform: scale(1.02); }
+  24% { transform: scale(1.1); }
+  32% { transform: scale(1); }
+}
+.animate-heart-punch {
+  animation: heartPunch 1.05s ease-in-out infinite;
+}
+
+@keyframes converge {
+  0% { opacity: 0; transform: scale(1.6) rotate(0deg); }
+  100% { opacity: 0.85; transform: scale(1) rotate(8deg); }
+}
+.animate-converge {
+  animation: converge 0.6s ease-out forwards;
+}
+
+/* ── Overpowered reveal: the word SLAMS in, overshoots, settles ──────────── */
+@keyframes opSlam {
+  0% { opacity: 0; transform: scale(3) rotate(-7deg); filter: blur(8px); }
+  45% { opacity: 1; transform: scale(0.86) rotate(3deg); filter: blur(0); }
+  62% { transform: scale(1.08) rotate(-2deg); }
+  78% { transform: scale(0.97) rotate(1deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+.animate-op-slam {
+  animation: opSlam 0.8s cubic-bezier(0.18, 1.5, 0.3, 1) both;
+}
+
+/* expanding shockwave crack ring */
+@keyframes crackRing {
+  0% { opacity: 0; transform: scale(0.2); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: scale(2.4); }
+}
+.animate-crack-ring {
+  animation: crackRing 0.8s ease-out forwards;
+}
+
+/* gentle float for drifting menacing marks */
+@keyframes driftUp {
+  0% { transform: translateY(0); opacity: 0.2; }
+  50% { opacity: 0.9; }
+  100% { transform: translateY(-26px); opacity: 0; }
+}
+
+/* header title — slow neon breathing glow */
+@keyframes titleGlow {
+  0%, 100% {
+    text-shadow:
+      3px 3px 0 #0b0806,
+      -1px -1px 0 rgba(255, 255, 255, 0.2),
+      0 0 26px rgba(255, 63, 124, 0.45);
+  }
+  50% {
+    text-shadow:
+      3px 3px 0 #0b0806,
+      -1px -1px 0 rgba(255, 255, 255, 0.3),
+      0 0 40px rgba(255, 214, 107, 0.7),
+      0 0 70px rgba(255, 63, 124, 0.5);
+  }
+}
+.animate-title-glow {
+  animation: titleGlow 3.6s ease-in-out infinite;
+}
+
+/* slow background drift for the stage speed-lines */
+@keyframes slowSpinRev {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+.animate-slowspin-rev {
+  animation: slowSpinRev 24s linear infinite;
+}
+
+/* Respect reduced-motion for the nausea-prone effects. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-screen-shake,
+  .animate-big-shake {
+    animation: none !important;
+  }
 }

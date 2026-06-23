@@ -101,9 +101,16 @@ export async function saveKey(key: StorageKey, value: unknown): Promise<void> {
   if (storageMode === "local") return saveLocal(key, value);
 }
 
-/** Subscribe to remote/cross-tab writes. Returns an unsubscribe fn. */
+/**
+ * Subscribe to remote/cross-tab writes. Returns an unsubscribe fn.
+ *
+ * `onResync` fires whenever the realtime channel (re)connects — the caller
+ * should re-pull everything then, so a device that was asleep / offline / on a
+ * flaky connection snaps back into sync the moment it's reachable again.
+ */
 export function subscribe(
   onChange: (key: StorageKey, value: unknown) => void,
+  onResync?: () => void,
 ): () => void {
   if (storageMode === "supabase") {
     const channel = supabase!
@@ -116,7 +123,10 @@ export function subscribe(
           if (row?.key) onChange(row.key, row.value ?? {});
         },
       )
-      .subscribe();
+      .subscribe((status) => {
+        // Fires on first connect and again after any reconnect.
+        if (status === "SUBSCRIBED") onResync?.();
+      });
     return () => {
       void supabase!.removeChannel(channel);
     };

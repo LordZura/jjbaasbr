@@ -50,26 +50,109 @@ function randomFrom(ids: string[]): string {
   return ids[Math.floor(Math.random() * ids.length)] ?? "";
 }
 
-// ── tiny audio (optional ticks) ──────────────────────────────────────────────
+// ── audio (reel ticks + dramatic Overpowered build-up & impact) ──────────────
 
 let audioCtx: AudioContext | null = null;
-function beep(freq: number, dur = 0.08, type: OscillatorType = "square") {
-  if (typeof window === "undefined") return;
+function getCtx(): AudioContext | null {
+  if (typeof window === "undefined") return null;
   const Ctor = window.AudioContext || window.webkitAudioContext;
-  if (!Ctor) return;
+  if (!Ctor) return null;
   audioCtx = audioCtx ?? new Ctor();
-  const ctx = audioCtx;
+  // Browsers suspend the context until a user gesture; the Spin click resumes it.
+  if (audioCtx.state === "suspended") void audioCtx.resume();
+  return audioCtx;
+}
+
+function beep(freq: number, dur = 0.08, type: OscillatorType = "square", vol = 0.08) {
+  const ctx = getCtx();
+  if (!ctx) return;
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   const now = ctx.currentTime;
   osc.type = type;
   osc.frequency.value = freq;
   gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(0.08, now + 0.01);
+  gain.gain.exponentialRampToValueAtTime(vol, now + 0.01);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
   osc.connect(gain).connect(ctx.destination);
   osc.start(now);
   osc.stop(now + dur + 0.02);
+}
+
+// Ominous rising drone + heartbeat thuds while time "stops" before an OP reveal.
+function playSuspense(durMs: number) {
+  const ctx = getCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const dur = durMs / 1000;
+
+  // Two detuned saws sweeping upward = mounting dread.
+  for (const detune of [0, 7]) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(64, now);
+    osc.frequency.exponentialRampToValueAtTime(240, now + dur);
+    osc.detune.value = detune;
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.05, now + 0.25);
+    gain.gain.exponentialRampToValueAtTime(0.09, now + dur - 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + dur + 0.05);
+  }
+  // Accelerating heartbeat thuds.
+  const beats = [0, 0.55, 1.0, 1.35, 1.62, 1.82];
+  beats.forEach((t) => {
+    if (t > dur) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const at = now + t;
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(110, at);
+    osc.frequency.exponentialRampToValueAtTime(46, at + 0.16);
+    gain.gain.setValueAtTime(0.0001, at);
+    gain.gain.exponentialRampToValueAtTime(0.14, at + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.2);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(at);
+    osc.stop(at + 0.24);
+  });
+}
+
+// The big bright chord that lands the Overpowered reveal.
+function playImpact() {
+  const ctx = getCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  // Noise burst for the "DON!".
+  const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.3, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i += 1) {
+    data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+  }
+  const noise = ctx.createBufferSource();
+  const nGain = ctx.createGain();
+  noise.buffer = buffer;
+  nGain.gain.setValueAtTime(0.5, now);
+  nGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+  noise.connect(nGain).connect(ctx.destination);
+  noise.start(now);
+  // Triumphant major chord.
+  [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.value = f;
+    const at = now + i * 0.04;
+    gain.gain.setValueAtTime(0.0001, at);
+    gain.gain.exponentialRampToValueAtTime(0.12, at + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.7);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(at);
+    osc.stop(at + 0.75);
+  });
 }
 
 // ── slot machine ─────────────────────────────────────────────────────────────
@@ -87,7 +170,14 @@ type Internals = VisibleSlots & {
   lastChange: number[];
   finals: (string | undefined)[];
   start: number;
+  /** Slot indices whose final fighter is Overpowered — held for the big reveal. */
+  opIndices: number[];
+  suspenseTriggered: boolean;
+  suspenseStart: number;
 };
+
+// How long time "stops" before an Overpowered reveal lands.
+const SUSPENSE_MS = 2000;
 
 function blankInternals(): Internals {
   return {
@@ -97,7 +187,14 @@ function blankInternals(): Internals {
     lastChange: Array(6).fill(0),
     finals: Array(6).fill(undefined),
     start: 0,
+    opIndices: [],
+    suspenseTriggered: false,
+    suspenseStart: 0,
   };
+}
+
+function isOpId(id: string | undefined): boolean {
+  return Boolean(id) && getCharacter(id as string)?.rarity === 1;
 }
 
 function blankVisible(): VisibleSlots {
@@ -113,7 +210,9 @@ function useSlotMachine(
   sound: boolean,
   onResolved: () => void,
 ) {
-  const [phase, setPhase] = useState<"idle" | "spinning" | "locked">("idle");
+  const [phase, setPhase] = useState<
+    "idle" | "spinning" | "suspense" | "locked"
+  >("idle");
   const [slots, setSlots] = useState<VisibleSlots>(blankVisible);
 
   const internals = useRef<Internals>(blankInternals());
@@ -162,9 +261,11 @@ function useSlotMachine(
     const now = performance.now();
     const reel = internals.current;
     const elapsed = now - reel.start;
-    let remaining = false;
+    const isOpSlot = (i: number) => reel.opIndices.includes(i);
+
+    // 1) Resolve the ordinary (non-Overpowered) slots on their staggered clock.
     for (let i = 0; i < 6; i += 1) {
-      if (reel.locked[i]) continue;
+      if (reel.locked[i] || isOpSlot(i)) continue;
       const row = Math.floor(i / 2);
       const lockAt = 1500 + row * 460; // 1st ~1.5s, 2nd ~2.0s, 3rd ~2.4s
       if (elapsed >= lockAt) {
@@ -173,7 +274,6 @@ function useSlotMachine(
         reel.flash[i] = now;
         if (soundRef.current) beep(140 + row * 60, 0.12, "sawtooth");
       } else {
-        remaining = true;
         const t = Math.min(1, elapsed / lockAt);
         const cadence = 45 + 150 * t * t; // fast → slow
         if (now - reel.lastChange[i] >= cadence) {
@@ -182,11 +282,55 @@ function useSlotMachine(
         }
       }
     }
+
+    // 2) Overpowered is ALWAYS the finale: hold its slot(s) spinning until the
+    //    rest of the board is set, then freeze time, build dread, and SLAM.
+    if (reel.opIndices.length > 0) {
+      const opUnlockedExists = reel.opIndices.some((i) => !reel.locked[i]);
+      const othersLocked = reel.locked.every((l, idx) =>
+        isOpSlot(idx) ? true : l,
+      );
+
+      if (opUnlockedExists) {
+        if (!reel.suspenseTriggered) {
+          if (othersLocked) {
+            // Begin the time-stop build-up.
+            reel.suspenseTriggered = true;
+            reel.suspenseStart = now;
+            // Mask the held fighters so the reveal is a true surprise.
+            for (const i of reel.opIndices) reel.display[i] = undefined;
+            setPhase("suspense");
+            if (soundRef.current) playSuspense(SUSPENSE_MS);
+          } else {
+            // Keep the OP reel whirring fast behind the others.
+            for (const i of reel.opIndices) {
+              if (now - reel.lastChange[i] >= 40) {
+                reel.display[i] = randomFrom(poolRef.current);
+                reel.lastChange[i] = now;
+              }
+            }
+          }
+        } else if (now - reel.suspenseStart >= SUSPENSE_MS) {
+          // Time resumes — reveal every held Overpowered at once.
+          for (const i of reel.opIndices) {
+            reel.display[i] = reel.finals[i];
+            reel.locked[i] = true;
+            reel.flash[i] = now;
+          }
+          if (soundRef.current) playImpact();
+        }
+        // else: frozen — hold the masked frame (time has stopped).
+      }
+    }
+
     sync();
-    if (!remaining) {
+
+    if (reel.locked.every(Boolean)) {
       stop();
       setPhase("locked");
-      if (soundRef.current) beep(520, 0.3, "sawtooth");
+      if (soundRef.current && reel.opIndices.length === 0) {
+        beep(520, 0.3, "sawtooth");
+      }
       resolvedRef.current();
     }
   };
@@ -203,6 +347,10 @@ function useSlotMachine(
       teams.p2[2],
     ];
     next.display = next.finals.map(() => randomFrom(poolRef.current));
+    next.opIndices = next.finals.reduce<number[]>((acc, id, i) => {
+      if (isOpId(id)) acc.push(i);
+      return acc;
+    }, []);
     next.start = performance.now();
     internals.current = next;
     sync();
@@ -344,19 +492,31 @@ export function MatchTab() {
   );
   const poolIds = useMemo(() => pool.map((c) => c.id), [pool]);
 
-  const [rarityCallout, setRarityCallout] = useState<RarityTier | null>(null);
+  const [rarityCallout, setRarityCallout] = useState<{
+    rarity: RarityTier;
+    names: string[];
+  } | null>(null);
+  // Toggles the full-stage shake + white flash on the instant an OP lands.
+  const [opImpact, setOpImpact] = useState(false);
 
   // When the reel fully resolves, headline the rarest fighter drawn — but only
   // for the truly special Overpowered pull, so the callout stays a big moment.
   const handleResolved = useCallback(() => {
     setFinalTeams((current) => {
       if (current) {
-        const best = [...current.p1, ...current.p2]
+        const ids = [...current.p1, ...current.p2];
+        const best = ids
           .map((id) => rarityOf(getCharacter(id)))
           .reduce((acc, t) => (t.rank > acc.rank ? t : acc));
         if (best.value === 1) {
-          setRarityCallout(best);
-          window.setTimeout(() => setRarityCallout(null), 2300);
+          const names = ids
+            .map((id) => getCharacter(id))
+            .filter((c) => c?.rarity === 1)
+            .map((c) => c!.name);
+          setOpImpact(true);
+          window.setTimeout(() => setOpImpact(false), 750);
+          setRarityCallout({ rarity: best, names });
+          window.setTimeout(() => setRarityCallout(null), 4200);
         }
       }
       return current;
@@ -379,20 +539,23 @@ export function MatchTab() {
     setRarityCallout(null);
   }
 
+  // The reel is "busy" while spinning AND through the Overpowered time-stop.
+  const busy = phase === "spinning" || phase === "suspense";
+
   function changeP1(id: string) {
     setP1Id(id);
-    if (phase !== "spinning") resetBoard();
+    if (!busy) resetBoard();
   }
   function changeP2(id: string) {
     setP2Id(id);
-    if (phase !== "spinning") resetBoard();
+    if (!busy) resetBoard();
   }
 
   const enoughPlayers = playerList.length >= 2;
   const samePick = Boolean(effP1) && effP1 === effP2;
   const validMatchup = Boolean(effP1 && effP2 && effP1 !== effP2);
   const poolOk = poolIds.length >= 6;
-  const canSpin = enoughPlayers && validMatchup && poolOk && phase !== "spinning";
+  const canSpin = enoughPlayers && validMatchup && poolOk && !busy;
 
   const rivalry = validMatchup ? h2hRecord(effP1, effP2, matches) : null;
   const showRivalryBadge = validMatchup && isRivalry(effP1, effP2, matches);
@@ -438,7 +601,7 @@ export function MatchTab() {
   }
 
   function handleReSpin() {
-    if (phase === "spinning" || !validMatchup) return;
+    if (busy || !validMatchup) return;
     const teams = drawAndAdvance();
     setFinalTeams(teams);
     setKills({});
@@ -647,13 +810,57 @@ export function MatchTab() {
 
       {/* ── the VS stage ──────────────────────────────────────────────── */}
       <div className="relative">
-        <div className="asbr-stage relative overflow-hidden border border-gold/25 shadow-[0_18px_50px_rgba(0,0,0,0.55)]">
+        <div
+          className={cn(
+            "asbr-stage relative overflow-hidden border border-gold/25 shadow-[0_18px_50px_rgba(0,0,0,0.55)]",
+            opImpact && "animate-big-shake",
+            phase === "spinning" && "animate-screen-shake",
+          )}
+        >
+          {/* converging manga action lines — only spin while the reel is busy */}
+          <div
+            className={cn(
+              "pointer-events-none absolute left-1/2 top-1/2 z-0 h-[160%] w-[160%] -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500",
+              busy ? "opacity-100" : "opacity-25",
+            )}
+          >
+            <div
+              className={cn(
+                "speed-lines absolute inset-0",
+                busy && "animate-slowspin-rev",
+              )}
+            />
+          </div>
+          {/* halftone wash for the manga-print texture */}
+          <div className="halftone pointer-events-none absolute inset-0 z-0 opacity-[0.06]" />
+
           {/* title watermark, faint behind the pillars */}
           <div className="pointer-events-none absolute inset-x-0 top-1.5 z-0 px-4 text-center">
             <span className="font-display text-[9px] uppercase tracking-[0.4em] text-amber-100/15 sm:text-xs sm:tracking-[0.5em]">
               JoJo&apos;s Bizarre Adventure · All-Star Battle R
             </span>
           </div>
+
+          {/* drifting ゴゴゴ menacing marks while the reel rolls */}
+          {busy && (
+            <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+              {[12, 38, 63, 82].map((left, i) => (
+                <span
+                  key={left}
+                  className="menacing absolute font-display text-2xl sm:text-4xl"
+                  style={{
+                    left: `${left}%`,
+                    top: `${12 + (i % 3) * 6}%`,
+                    animation: `driftUp ${1.8 + (i % 3) * 0.4}s ease-out ${
+                      i * 0.3
+                    }s infinite`,
+                  }}
+                >
+                  ゴ
+                </span>
+              ))}
+            </div>
+          )}
 
           {/* the six fighter pillars flanking the VS splatter */}
           <div className="relative z-10 overflow-x-auto px-2.5 pb-3 pt-7 sm:px-4">
@@ -715,14 +922,21 @@ export function MatchTab() {
               ]}
             />
             <div className="ml-auto flex items-center gap-2 sm:gap-3">
-              <span className="hidden text-[11px] font-black uppercase tracking-[0.14em] text-[#3a2406] sm:inline">
-                {phase === "spinning"
-                  ? "Rolling…"
-                  : phase === "locked"
-                    ? "Declare the victor ↓"
-                    : canSpin
-                      ? "Ready"
-                      : "Pick fighters"}
+              <span
+                className={cn(
+                  "hidden text-[11px] font-black uppercase tracking-[0.14em] text-[#3a2406] sm:inline",
+                  phase === "suspense" && "animate-pulse !text-[#5a0a22]",
+                )}
+              >
+                {phase === "suspense"
+                  ? "Time has stopped…"
+                  : phase === "spinning"
+                    ? "Rolling…"
+                    : phase === "locked"
+                      ? "Declare the victor ↓"
+                      : canSpin
+                        ? "Ready"
+                        : "Pick fighters"}
               </span>
               <button
                 onClick={handleSpin}
@@ -741,7 +955,11 @@ export function MatchTab() {
                   <span className="pointer-events-none absolute inset-y-0 w-1/3 -skew-x-12 bg-white/25 [animation:sheen_2.6s_ease-in-out_infinite]" />
                 )}
                 <Swords size={20} />
-                {phase === "spinning" ? "Spinning…" : "Spin"}
+                {phase === "suspense"
+                  ? "…!?"
+                  : phase === "spinning"
+                    ? "Spinning…"
+                    : "Spin"}
               </button>
               <div
                 className="hidden h-9 w-11 place-items-center bg-[#190f04] text-gold sm:grid"
@@ -755,8 +973,19 @@ export function MatchTab() {
           </div>
         </div>
 
+        {/* Overpowered time-stop build-up */}
+        {phase === "suspense" && <TimeStopOverlay />}
+        {/* blinding white flash at the instant of impact */}
+        {opImpact && (
+          <div className="animate-flash-white pointer-events-none absolute inset-0 z-50 bg-white" />
+        )}
         {/* overpowered pull callout */}
-        {rarityCallout && <RarityCallout rarity={rarityCallout} />}
+        {rarityCallout && (
+          <RarityCallout
+            rarity={rarityCallout.rarity}
+            names={rarityCallout.names}
+          />
+        )}
         {/* first-encounter overlay */}
         {firstEncounter && <FirstEncounterOverlay />}
         {/* victory flourish */}
@@ -1024,60 +1253,144 @@ function FirstEncounterOverlay() {
   );
 }
 
-function RarityCallout({ rarity }: { rarity: RarityTier }) {
+// ── Overpowered time-stop build-up ("THE WORLD") ─────────────────────────────
+// Held on screen for ~2s while the reel is frozen, just before the reveal.
+function TimeStopOverlay() {
+  return (
+    <div className="animate-time-desat pointer-events-none absolute inset-0 z-40 grid place-items-center overflow-hidden">
+      {/* deep dark + pulsing vignette */}
+      <div className="absolute inset-0 bg-black/70" />
+      <div className="vignette animate-vignette-pulse absolute inset-0" />
+
+      {/* converging speed lines slamming inward */}
+      <div className="speed-lines animate-converge absolute left-1/2 top-1/2 h-[180%] w-[180%] -translate-x-1/2 -translate-y-1/2" />
+
+      {/* climbing wall of ゴゴゴ menacing marks */}
+      <div className="absolute inset-0 overflow-hidden">
+        {Array.from({ length: 14 }).map((_, i) => (
+          <span
+            key={i}
+            className="menacing animate-gogo absolute font-display text-3xl sm:text-5xl"
+            style={{
+              left: `${(i * 47 + 6) % 96}%`,
+              bottom: `${(i % 5) * 17}%`,
+              animationDelay: `${(i % 6) * 0.18}s`,
+            }}
+          >
+            ゴ
+          </span>
+        ))}
+      </div>
+
+      {/* the tension headline, heart-punching outward */}
+      <div className="relative text-center">
+        <p className="menacing animate-heart-punch font-display text-2xl uppercase tracking-[0.4em] sm:text-4xl">
+          Toki yo Tomare
+        </p>
+        <p
+          className="animate-heart-punch font-display text-5xl uppercase italic text-white sm:text-8xl"
+          style={{
+            WebkitTextStroke: "2px #b98cff",
+            textShadow:
+              "0 0 24px rgba(150,90,255,0.9), 0 0 60px rgba(150,90,255,0.5)",
+          }}
+        >
+          Time Stop
+        </p>
+        <p className="mt-2 font-display text-base uppercase tracking-[0.5em] text-zinc-300 sm:text-xl">
+          Something Overpowered approaches…
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function RarityCallout({
+  rarity,
+  names,
+}: {
+  rarity: RarityTier;
+  names: string[];
+}) {
   return (
     <div className="pointer-events-none absolute inset-0 z-40 grid place-items-center overflow-hidden">
-      <div className="absolute inset-0 bg-black/55 backdrop-blur-[2px]" />
+      <div className="animate-overlay-in absolute inset-0 bg-black/65 backdrop-blur-[2px]" />
 
       {/* radiant rainbow rays behind the word */}
       <div
-        className="animate-starburst absolute h-[140%] w-[140%] opacity-70"
+        className="anim-op-halo absolute h-[150%] w-[150%] opacity-80"
         style={{
           background:
-            "repeating-conic-gradient(from 0deg, rgba(255,255,255,0.5) 0deg 3deg, transparent 3deg 13deg)",
-          WebkitMaskImage: "radial-gradient(circle, black 4%, transparent 58%)",
-          maskImage: "radial-gradient(circle, black 4%, transparent 58%)",
-          filter: "hue-rotate(0deg)",
+            "repeating-conic-gradient(from 0deg, rgba(255,255,255,0.55) 0deg 2.5deg, transparent 2.5deg 12deg)",
+          WebkitMaskImage: "radial-gradient(circle, black 3%, transparent 60%)",
+          maskImage: "radial-gradient(circle, black 3%, transparent 60%)",
         }}
       />
 
-      {/* sparks flying up */}
-      {Array.from({ length: 28 }).map((_, i) => (
+      {/* expanding shockwave crack rings */}
+      <div
+        className="animate-crack-ring absolute h-40 w-40 rounded-full border-4 sm:h-72 sm:w-72"
+        style={{ borderColor: "#ffe14d" }}
+      />
+      <div
+        className="animate-crack-ring absolute h-40 w-40 rounded-full border-4 sm:h-72 sm:w-72"
+        style={{ borderColor: "#ff3fd0", animationDelay: "0.18s" }}
+      />
+
+      {/* a storm of sparks flying up */}
+      {Array.from({ length: 44 }).map((_, i) => (
         <span
           key={i}
           className="absolute h-1.5 w-1.5 rounded-full"
           style={{
             left: `${(i * 37) % 100}%`,
-            bottom: "8%",
+            bottom: "6%",
             background: i % 2 ? rarity.color2 : rarity.color,
-            animation: `sparkFloat ${1.3 + (i % 5) * 0.22}s ease-out ${
-              (i % 7) * 0.1
+            animation: `sparkFloat ${1.2 + (i % 6) * 0.2}s ease-out ${
+              (i % 9) * 0.08
             }s infinite`,
-            boxShadow: `0 0 10px ${i % 2 ? rarity.color2 : rarity.color}`,
+            boxShadow: `0 0 12px ${i % 2 ? rarity.color2 : rarity.color}`,
           }}
         />
       ))}
 
-      <div className="animate-overlay-in relative text-center">
+      <div className="relative text-center">
         <p
-          className="font-display text-sm uppercase tracking-[0.5em]"
+          className="animate-overlay-in font-display text-base uppercase tracking-[0.6em] sm:text-xl"
           style={{ color: rarity.color2 }}
         >
-          Top Tier Pull
+          ☆ Overpowered ☆
         </p>
         <p
-          className="anim-op-aura font-display text-5xl uppercase italic sm:text-8xl"
+          className="animate-op-slam font-display text-6xl uppercase italic leading-[0.9] sm:text-[10rem]"
           style={{
             background:
-              "linear-gradient(90deg, #ff3fd0, #ffe14d, #35e8ff, #b06bff, #ff3fd0)",
+              "linear-gradient(92deg, #ff3fd0, #ffe14d, #35e8ff, #b06bff, #ff3fd0)",
+            backgroundSize: "200% 100%",
             WebkitBackgroundClip: "text",
             backgroundClip: "text",
             color: "transparent",
-            WebkitTextStroke: "1.5px rgba(0,0,0,0.5)",
-            filter: "drop-shadow(0 0 18px rgba(255,225,77,0.7))",
+            WebkitTextStroke: "2px rgba(0,0,0,0.55)",
+            filter: "drop-shadow(0 0 26px rgba(255,225,77,0.85))",
+            animation:
+              "opSlam 0.8s cubic-bezier(0.18,1.5,0.3,1) both, opHue 5s linear infinite 0.8s",
           }}
         >
           {rarity.label}
+        </p>
+        {names.length > 0 && (
+          <p
+            className="text-outline mt-2 animate-overlay-in font-display text-2xl uppercase italic text-white sm:text-5xl"
+            style={{ animationDelay: "0.5s" }}
+          >
+            {names.join(" · ")}
+          </p>
+        )}
+        <p
+          className="menacing mt-3 animate-overlay-in font-display text-sm uppercase tracking-[0.45em] sm:text-lg"
+          style={{ animationDelay: "0.7s" }}
+        >
+          Stand Proud — you are strong
         </p>
       </div>
     </div>

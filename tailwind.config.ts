@@ -22,7 +22,13 @@ const config: Config = {
         impact: "0 0 36px rgba(255, 63, 124, 0.35)"
       },
       fontFamily: {
-        display: ["var(--font-display)", "Impact", "Arial Black", "sans-serif"]
+        display: [
+          "var(--font-display, Impact)",
+          "Impact",
+          "Arial Black",
+          "sans-serif"
+        ],
+        body: ["var(--font-body, Oswald)", "Oswald", "system-ui", "sans-serif"]
       },
       backgroundImage: {
         scanlines:

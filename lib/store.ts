@@ -40,6 +40,8 @@ type Store = {
   toasts: Toast[];
 
   init: () => Promise<void>;
+  /** Re-pull the whole shared dataset (used on reconnect / tab refocus). */
+  reload: () => Promise<void>;
   addPlayer: (name: string) => Player | undefined;
   renamePlayer: (id: string, name: string) => void;
   deletePlayer: (id: string) => void;
@@ -111,16 +113,44 @@ export const useStore = create<Store>((set, get) => {
       }
 
       // Live updates: Supabase realtime, or the cross-tab `storage` event.
+      // `reload` on (re)connect keeps every device converged after sleep/offline.
       try {
-        subscribe((key, value) => {
-          if (key === "players") set({ players: (value as PlayersMap) ?? {} });
-          if (key === "matches") set({ matches: (value as MatchesMap) ?? {} });
-          if (key === "collections")
-            set({ collections: (value as CollectionsMap) ?? {} });
-          set({ status: "synced" });
-        });
+        subscribe(
+          (key, value) => {
+            if (key === "players") set({ players: (value as PlayersMap) ?? {} });
+            if (key === "matches") set({ matches: (value as MatchesMap) ?? {} });
+            if (key === "collections")
+              set({ collections: (value as CollectionsMap) ?? {} });
+            set({ status: "synced" });
+          },
+          () => void get().reload(),
+        );
       } catch {
         /* live updates are best-effort */
+      }
+
+      // Resync whenever the user returns to the tab or the network comes back.
+      if (typeof window !== "undefined") {
+        const resync = () => {
+          if (document.visibilityState === "visible") void get().reload();
+        };
+        window.addEventListener("focus", resync);
+        window.addEventListener("online", resync);
+        document.addEventListener("visibilitychange", resync);
+      }
+    },
+
+    reload: async () => {
+      try {
+        const data = await loadAll();
+        set({
+          players: data.players,
+          matches: data.matches,
+          collections: data.collections,
+          status: "synced",
+        });
+      } catch {
+        /* a failed background refresh keeps the last-known-good state */
       }
     },
 
