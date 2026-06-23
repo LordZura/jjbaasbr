@@ -1,422 +1,68 @@
 [
-  {
-    "id": "akira-otoishi",
-    "name": "Akira Otoishi",
-    "part": "Part 4",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "bruno-bucciarati",
-    "name": "Bruno Bucciarati",
-    "part": "Part 5",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "caesar-anthonio-zeppeli",
-    "name": "Caesar Anthonio Zeppeli",
-    "part": "Part 2",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "dio",
-    "name": "DIO",
-    "part": "Part 3",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "diavolo",
-    "name": "Diavolo",
-    "part": "Part 5",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "diego-brando",
-    "name": "Diego Brando",
-    "part": "Part 7",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "diego-brando-the-world",
-    "name": "Diego Brando (THE WORLD)",
-    "part": "Part 7",
-    "weight": 7,
-    "tier": "Normal"
-  },
-  {
-    "id": "dio-brando",
-    "name": "Dio Brando",
-    "part": "Part 1",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "enrico-pucci",
-    "name": "Enrico Pucci",
-    "part": "Part 6",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "enrico-pucci-final",
-    "name": "Enrico Pucci (Final)",
-    "part": "Part 6",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "ermes-costello",
-    "name": "Ermes Costello",
-    "part": "Part 6",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "esidisi",
-    "name": "Esidisi",
-    "part": "Part 2",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "foo-fighters",
-    "name": "Foo Fighters",
-    "part": "Part 6",
-    "weight": 7,
-    "tier": "Normal"
-  },
-  {
-    "id": "funny-valentine",
-    "name": "Funny Valentine",
-    "part": "Part 7",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "ghiaccio",
-    "name": "Ghiaccio",
-    "part": "Part 5",
-    "weight": 9,
-    "tier": "Bad"
-  },
-  {
-    "id": "giorno-giovanna",
-    "name": "Giorno Giovanna",
-    "part": "Part 5",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "guido-mista",
-    "name": "Guido Mista",
-    "part": "Part 5",
-    "weight": 7,
-    "tier": "Normal"
-  },
-  {
-    "id": "gyro-zeppeli",
-    "name": "Gyro Zeppeli",
-    "part": "Part 7",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "hol-horse",
-    "name": "Hol Horse",
-    "part": "Part 3",
-    "weight": 7,
-    "tier": "Normal"
-  },
-  {
-    "id": "iggy",
-    "name": "Iggy",
-    "part": "Part 3",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "ikuro-hashizawa",
-    "name": "Ikuro Hashizawa",
-    "part": "Baoh",
-    "weight": 1,
-    "tier": "Overpowered"
-  },
-  {
-    "id": "jean-pierre-polnareff",
-    "name": "Jean Pierre Polnareff",
-    "part": "Part 3",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "johnny-joestar",
-    "name": "Johnny Joestar",
-    "part": "Part 7",
-    "weight": 9,
-    "tier": "Bad"
-  },
-  {
-    "id": "jolyne-cujoh",
-    "name": "Jolyne Cujoh",
-    "part": "Part 6",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "jonathan-joestar",
-    "name": "Jonathan Joestar",
-    "part": "Part 1",
-    "weight": 7,
-    "tier": "Normal"
-  },
-  {
-    "id": "joseph-joestar",
-    "name": "Joseph Joestar",
-    "part": "Part 2",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "joseph-joestar-part-3",
-    "name": "Joseph Joestar (Part 3)",
-    "part": "Part 3",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "josuke-higashikata-part-4",
-    "name": "Josuke Higashikata (Part 4)",
-    "part": "Part 4",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "josuke-higashikata-part-8",
-    "name": "Josuke Higashikata (Part 8)",
-    "part": "Part 8",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "jotaro-kujo",
-    "name": "Jotaro Kujo",
-    "part": "Part 3",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "jotaro-kujo-part-4",
-    "name": "Jotaro Kujo (Part 4)",
-    "part": "Part 4",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "kars",
-    "name": "Kars",
-    "part": "Part 2",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "keicho-nijimura",
-    "name": "Keicho Nijimura",
-    "part": "Part 4",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "koichi-hirose",
-    "name": "Koichi Hirose",
-    "part": "Part 4",
-    "weight": 7,
-    "tier": "Normal"
-  },
-  {
-    "id": "kosaku-kawajiri",
-    "name": "Kosaku Kawajiri",
-    "part": "Part 4",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "leone-abbacchio",
-    "name": "Leone Abbacchio",
-    "part": "Part 5",
-    "weight": 7,
-    "tier": "Normal"
-  },
-  {
-    "id": "lisa-lisa",
-    "name": "Lisa Lisa",
-    "part": "Part 2",
-    "weight": 10,
-    "tier": "Very Bad"
-  },
-  {
-    "id": "mariah",
-    "name": "Mariah",
-    "part": "Part 3",
-    "weight": 7,
-    "tier": "Normal"
-  },
-  {
-    "id": "muhammad-avdol",
-    "name": "Muhammad Avdol",
-    "part": "Part 3",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "narancia-ghirga",
-    "name": "Narancia Ghirga",
-    "part": "Part 5",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "narciso-anasui",
-    "name": "Narciso Anasui",
-    "part": "Part 6",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "noriaki-kakyoin",
-    "name": "Noriaki Kakyoin",
-    "part": "Part 3",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "okuyasu-nijimura",
-    "name": "Okuyasu Nijimura",
-    "part": "Part 4",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "pannacotta-fugo",
-    "name": "Pannacotta Fugo",
-    "part": "Part 5",
-    "weight": 5,
-    "tier": "Strong"
-  },
-  {
-    "id": "pet-shop",
-    "name": "Pet Shop",
-    "part": "Part 3",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "prosciutto-and-pesci",
-    "name": "Prosciutto & Pesci",
-    "part": "Part 5",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "risotto-nero",
-    "name": "Risotto Nero",
-    "part": "Part 5",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "robert-e-o-speedwagon",
-    "name": "Robert E. O. Speedwagon",
-    "part": "Part 1",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "rohan-kishibe",
-    "name": "Rohan Kishibe",
-    "part": "Part 4",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "rudol-von-stroheim",
-    "name": "Rudol von Stroheim",
-    "part": "Part 2",
-    "weight": 1,
-    "tier": "Overpowered"
-  },
-  {
-    "id": "shigekiyo-yangu-shigechi",
-    "name": "Shigekiyo Yangu (Shigechi)",
-    "part": "Part 4",
-    "weight": 10,
-    "tier": "Very Bad"
-  },
-  {
-    "id": "trish-una",
-    "name": "Trish Una",
-    "part": "Part 5",
-    "weight": 7,
-    "tier": "Normal"
-  },
-  {
-    "id": "vanilla-ice",
-    "name": "Vanilla Ice",
-    "part": "Part 3",
-    "weight": 1,
-    "tier": "Overpowered"
-  },
-  {
-    "id": "wamuu",
-    "name": "Wamuu",
-    "part": "Part 2",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "weather-report",
-    "name": "Weather Report",
-    "part": "Part 6",
-    "weight": 1,
-    "tier": "Overpowered"
-  },
-  {
-    "id": "will-a-zeppeli",
-    "name": "Will A. Zeppeli",
-    "part": "Part 1",
-    "weight": 3,
-    "tier": "Very Strong"
-  },
-  {
-    "id": "wonder-of-u",
-    "name": "Wonder of U",
-    "part": "Part 8",
-    "weight": 1,
-    "tier": "Overpowered"
-  },
-  {
-    "id": "yoshikage-kira",
-    "name": "Yoshikage Kira",
-    "part": "Part 4",
-    "weight": 1,
-    "tier": "Overpowered"
-  },
-  {
-    "id": "yukako-yamagishi",
-    "name": "Yukako Yamagishi",
-    "part": "Part 4",
-    "weight": 1,
-    "tier": "Overpowered"
-  },
-  {
-    "id": "yuya-fungami",
-    "name": "Yuya Fungami",
-    "part": "Part 4",
-    "weight": 5,
-    "tier": "Strong"
-  }
+  {"id":"jonathan-joestar","name":"Jonathan Joestar","part":1,"rarity":7,"imageUrl":"https://static.jojowiki.com/images/f/ff/latest/20220310011837/Jonathan_ASB_R.png"},
+  {"id":"dio-brando","name":"Dio Brando","part":1,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/d/de/latest/20220310012037/Dio_Brando_ASB_R.png"},
+  {"id":"will-a-zeppeli","name":"Will A. Zeppeli","part":1,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/b/b6/latest/20220310011921/Zeppeli_ASB_R.png"},
+  {"id":"speedwagon","name":"Robert E. O. Speedwagon","part":1,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/5/5f/latest/20220526174703/Speedwagon_ASB_R.png"},
+
+  {"id":"joseph-joestar","name":"Joseph Joestar","part":2,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/1/1c/latest/20220310012451/Joseph_ASB_R.png"},
+  {"id":"caesar-zeppeli","name":"Caesar Anthonio Zeppeli","part":2,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/b/b7/latest/20220309233353/Caesar_ASB_R.png"},
+  {"id":"lisa-lisa","name":"Lisa Lisa","part":2,"rarity":10,"imageUrl":"https://static.jojowiki.com/images/6/63/latest/20220310012554/LisaLisa_ASB_R.png"},
+  {"id":"wamuu","name":"Wamuu","part":2,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/8/8e/latest/20220310012810/Wamuu_ASB_R.png"},
+  {"id":"esidisi","name":"Esidisi","part":2,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/4/4f/latest/20220310012905/Esidisi_ASB_R.png"},
+  {"id":"kars","name":"Kars","part":2,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/9/93/latest/20220310012649/Kars_ASB_R.png"},
+  {"id":"stroheim","name":"Rudol von Stroheim","part":2,"rarity":1,"imageUrl":"https://static.jojowiki.com/images/2/22/latest/20230203160120/Stroheim_ASB_R.png"},
+
+  {"id":"jotaro-kujo","name":"Jotaro Kujo","part":3,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/5/58/latest/20220310013401/Jotaro_ASB_R.png"},
+  {"id":"dio","name":"DIO","part":3,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/1/15/latest/20220310014807/DIO_ASB_R.png"},
+  {"id":"kakyoin","name":"Noriaki Kakyoin","part":3,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/5/51/latest/20220310013835/Kakyoin_ASB_R.png"},
+  {"id":"polnareff","name":"Jean Pierre Polnareff","part":3,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/e/e3/latest/20220310014248/Polnareff_ASB_R.png"},
+  {"id":"avdol","name":"Muhammad Avdol","part":3,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/f/fd/latest/20220310013919/Avdol_ASB_R.png"},
+  {"id":"joseph-p3","name":"Joseph Joestar (Part 3)","part":3,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/f/f7/latest/20220310014107/Old_Joseph_ASB_R.png"},
+  {"id":"iggy","name":"Iggy","part":3,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/0/09/latest/20220310014541/Iggy_ASB_R.png"},
+  {"id":"hol-horse","name":"Hol Horse","part":3,"rarity":7,"imageUrl":"https://static.jojowiki.com/images/3/3b/latest/20220310014416/HolHorse_ASB_R.png"},
+  {"id":"vanilla-ice","name":"Vanilla Ice","part":3,"rarity":1,"imageUrl":"https://static.jojowiki.com/images/0/0f/latest/20220310014645/Vanilla_Ice_ASB_R.png"},
+  {"id":"pet-shop","name":"Pet Shop","part":3,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/4/42/latest/20220526180054/PetShop_ASB_R.png"},
+  {"id":"mariah","name":"Mariah","part":3,"rarity":7,"imageUrl":"https://static.jojowiki.com/images/a/af/latest/20220526174702/Mariah_ASB_R.png"},
+
+  {"id":"josuke-p4","name":"Josuke Higashikata","part":4,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/f/f4/latest/20220310010932/Josuke_ASB_R.png"},
+  {"id":"jotaro-p4","name":"Jotaro Kujo (Part 4)","part":4,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/0/06/latest/20220701144132/Part_IV_Jotaro_ASBR.png"},
+  {"id":"yoshikage-kira","name":"Yoshikage Kira","part":4,"rarity":1,"imageUrl":"https://static.jojowiki.com/images/e/ee/latest/20220310005326/Yoshikage_Kira_ASB_R.png"},
+  {"id":"kosaku-kira","name":"Kosaku Kawajiri","part":4,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/0/00/latest/20220310022030/Kosaku_Kira_ASB_R.png"},
+  {"id":"okuyasu","name":"Okuyasu Nijimura","part":4,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/1/11/latest/20220310010802/Okuyasu_ASB_R.png"},
+  {"id":"koichi","name":"Koichi Hirose","part":4,"rarity":7,"imageUrl":"https://static.jojowiki.com/images/6/63/latest/20220310010637/Koichi_ASB_R.png"},
+  {"id":"rohan","name":"Rohan Kishibe","part":4,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/7/75/latest/20220310010016/Rohan_ASB_R.png"},
+  {"id":"keicho","name":"Keicho Nijimura","part":4,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/5/52/latest/20230303142250/Keicho_ASB_R.png"},
+  {"id":"akira-otoishi","name":"Akira Otoishi","part":4,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/6/66/latest/20220310005958/Akira_ASB_R.png"},
+  {"id":"shigechi","name":"Shigekiyo Yangu","part":4,"rarity":10,"imageUrl":"https://static.jojowiki.com/images/a/a6/latest/20220310010345/Shigechi_ASB_R.png"},
+  {"id":"yukako","name":"Yukako Yamagishi","part":4,"rarity":1,"imageUrl":"https://static.jojowiki.com/images/1/19/latest/20220701144338/Yukako_Yamagishi_ASBR.png"},
+  {"id":"yuya-fungami","name":"Yuya Fungami","part":4,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/c/c1/latest/20231010014709/Yuya_Fungami_ASB_R.png"},
+
+  {"id":"giorno","name":"Giorno Giovanna","part":5,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/5/5e/latest/20220310020749/Giorno_ASB_R.png"},
+  {"id":"bucciarati","name":"Bruno Bucciarati","part":5,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/1/1c/latest/20220310020201/Bucciarati_ASB_R.png"},
+  {"id":"mista","name":"Guido Mista","part":5,"rarity":7,"imageUrl":"https://static.jojowiki.com/images/d/d1/latest/20220310021024/Mista_ASB_R.png"},
+  {"id":"narancia","name":"Narancia Ghirga","part":5,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/5/51/latest/20220310020952/Narancia_ASB_R.png"},
+  {"id":"abbacchio","name":"Leone Abbacchio","part":5,"rarity":7,"imageUrl":"https://static.jojowiki.com/images/0/06/latest/20230821015146/Abbacchio_ASB_R.png"},
+  {"id":"fugo","name":"Pannacotta Fugo","part":5,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/2/21/latest/20220310020518/Fugo_ASB_R.png"},
+  {"id":"trish","name":"Trish Una","part":5,"rarity":7,"imageUrl":"https://static.jojowiki.com/images/e/e0/latest/20220826023631/Trish_ASBR.png"},
+  {"id":"diavolo","name":"Diavolo","part":5,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/8/8c/latest/20220310020355/Diavolo_ASB_R.png"},
+  {"id":"risotto","name":"Risotto Nero","part":5,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/e/e3/latest/20221007131526/Risotto_Nero_ASB_R.png"},
+  {"id":"prosciutto-pesci","name":"Prosciutto & Pesci","part":5,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/f/fd/latest/20220826023632/Prosciutto_Pesci_ASBR.png"},
+  {"id":"ghiaccio","name":"Ghiaccio","part":5,"rarity":9,"imageUrl":"https://static.jojowiki.com/images/c/cd/latest/20220826023633/Ghiaccio_ASBR.png"},
+
+  {"id":"jolyne","name":"Jolyne Cujoh","part":6,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/d/df/latest/20220310021705/Jolyne_ASB_R.png"},
+  {"id":"ermes","name":"Ermes Costello","part":6,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/a/a9/latest/20220310021856/Ermes_ASB_R.png"},
+  {"id":"weather-report","name":"Weather Report","part":6,"rarity":1,"imageUrl":"https://static.jojowiki.com/images/f/f1/latest/20221125153813/Weather_Report_ASBR.png"},
+  {"id":"anasui","name":"Narciso Anasui","part":6,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/c/cb/latest/20220310021951/Anasui_ASB_R.png"},
+  {"id":"pucci","name":"Enrico Pucci","part":6,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/3/39/latest/20220310021542/Pucci_ASB_R.png"},
+  {"id":"pucci-final","name":"Father Pucci (Final)","part":6,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/b/b8/latest/20221125153812/Enrico_Pucci_%28Final%29_ASBR.png"},
+  {"id":"foo-fighters","name":"Foo Fighters","part":6,"rarity":7,"imageUrl":"https://static.jojowiki.com/images/c/cc/latest/20220701142851/Foo_Fighters_ASBR_Render.png"},
+
+  {"id":"gyro","name":"Gyro Zeppeli","part":7,"rarity":5,"imageUrl":"https://static.jojowiki.com/images/a/a1/latest/20220310015657/Gyro_ASB_R.png"},
+  {"id":"johnny","name":"Johnny Joestar","part":7,"rarity":9,"imageUrl":"https://static.jojowiki.com/images/e/eb/latest/20220310015319/Johnny_ASB_R.png"},
+  {"id":"valentine","name":"Funny Valentine","part":7,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/c/c3/latest/20220310015804/Funny_Valentine_ASB_R.png"},
+  {"id":"diego","name":"Diego Brando","part":7,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/d/db/latest/20220526174701/Diego_ASB_R.png"},
+  {"id":"diego-the-world","name":"Diego Brando (THE WORLD)","part":7,"rarity":7,"imageUrl":"https://static.jojowiki.com/images/e/e9/latest/20230601020731/Alternate_World_Diego_ASBR.png"},
+
+  {"id":"josuke-p8","name":"Josuke Higashikata (Part 8)","part":8,"rarity":3,"imageUrl":"https://static.jojowiki.com/images/5/55/latest/20220310011554/Josuke_JJL_ASB_R.png"},
+  {"id":"wonder-of-u","name":"Wonder of U","part":8,"rarity":1,"imageUrl":"https://static.jojowiki.com/images/9/96/latest/20231122023751/Wonder_of_U_ASB_R.png"}
 ]
